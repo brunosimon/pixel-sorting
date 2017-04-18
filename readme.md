@@ -11,7 +11,9 @@
 
 ### Todo
 
-- [ ] Base pixel sorting function
+- [x] Base pixel sorting function
+- [x] Choose direction
+- [ ] Handle non square images
 - [ ] Upload
 - [ ] Download
 - [ ] GUI
