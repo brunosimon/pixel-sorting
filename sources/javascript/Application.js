@@ -69,7 +69,7 @@ export default class Application extends EventEmitter
             this.drawPixels()
         })
 
-        image.src = 'assets/images/400x400-5.jpg'
+        image.src = 'assets/images/original-4.jpg'
     }
 
     /**
@@ -209,8 +209,8 @@ export default class Application extends EventEmitter
                 // Vertical
                 else if(this.direction === 'vertical')
                 {
-                    const x = index % this.image.width
-                    const y = Math.floor(index / this.image.width)
+                    const x = index % this.image.height
+                    const y = Math.floor(index / this.image.height)
 
                     pixelIndex = x * this.image.width + y
                 }
