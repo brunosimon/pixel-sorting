@@ -10,6 +10,7 @@ export default class Application extends EventEmitter
         super()
 
         this.direction = 'vertical' // horizontal | vertical
+        this.proportion = 1
 
         this.setCanvas()
         this.loadImage()
@@ -20,13 +21,27 @@ export default class Application extends EventEmitter
      */
     setCanvas()
     {
-        this.canvas = document.createElement('canvas')
-        this.canvas.width = 1600
-        this.canvas.height = 1600
+        // Original
+        this.original = {}
+        this.original.canvas = document.createElement('canvas')
+        this.original.canvas.width = 1
+        this.original.canvas.height = 1
+        this.original.canvas.classList.add('canvas', 'canvas--original')
 
-        this.context = this.canvas.getContext('2d')
+        this.original.context = this.original.canvas.getContext('2d')
 
-        document.body.appendChild(this.canvas)
+        document.body.appendChild(this.original.canvas)
+
+        // Sorted
+        this.sorted = {}
+        this.sorted.canvas = document.createElement('canvas')
+        this.sorted.canvas.width = 1
+        this.sorted.canvas.height = 1
+        this.sorted.canvas.classList.add('canvas', 'canvas--sorted')
+
+        this.sorted.context = this.sorted.canvas.getContext('2d')
+
+        document.body.appendChild(this.sorted.canvas)
     }
 
     /**
@@ -40,8 +55,14 @@ export default class Application extends EventEmitter
         {
             this.image = image
 
-            this.image.width *= 1
-            this.image.height *= 1
+            this.image.width *= this.proportion
+            this.image.height *= this.proportion
+
+            this.original.canvas.width = this.image.width
+            this.original.canvas.height = this.image.height
+
+            this.sorted.canvas.width = this.image.width
+            this.sorted.canvas.height = this.image.height
 
             this.setPixels()
             this.sortPixels()
@@ -56,14 +77,14 @@ export default class Application extends EventEmitter
      */
     setPixels()
     {
-        // Draw image
-        this.context.drawImage(this.image, 0, 0, this.image.width, this.image.height)
+        // Draw original image
+        this.original.context.drawImage(this.image, 0, 0, this.image.width, this.image.height)
 
         // Set rows
         this.rows = []
         
         // Get image data
-        const imageData = this.context.getImageData(0, 0, this.image.width, this.image.height)
+        const imageData = this.original.context.getImageData(0, 0, this.image.width, this.image.height)
 
         // Each pixel
         for(let index = 0; index < imageData.data.length; index += 4)
@@ -160,31 +181,7 @@ export default class Application extends EventEmitter
      */
     compare(a, b)
     {
-        let aValue = 0
-        let bValue = 0
-
-        // Lightness
-        aValue = a.l
-        bValue = b.l
-
-        // // Red
-        // aValue = a.r
-        // bValue = b.r
-
-        // // Blue
-        // aValue = a.r
-        // bValue = b.r
-        
-        // aValue = (Math.floor(a.r * 10) / 10) * 1000 + (Math.floor(a.g * 10) / 10) * 10000 + a.b * 100
-        // bValue = (Math.floor(b.r * 10) / 10) * 1000 + (Math.floor(b.g * 10) / 10) * 10000 + b.b * 100
-        
-        // aValue = (Math.floor(a.r * 5) / 5) * 1000 + a.b
-        // bValue = (Math.floor(b.r * 5) / 5) * 1000 + b.b
-        
-        // aValue = (Math.floor(a.b * 4) / 4)
-        // bValue = (Math.floor(b.b * 4) / 4)
-
-        return bValue - aValue
+        return b.l - a.l
     }
 
     /**
@@ -192,7 +189,7 @@ export default class Application extends EventEmitter
      */
     drawPixels()
     {
-        const imageData = this.context.createImageData(this.image.width, this.image.height)
+        const imageData = this.sorted.context.createImageData(this.image.width, this.image.height)
 
         let index = 0
 
@@ -230,6 +227,6 @@ export default class Application extends EventEmitter
         }
 
         // Draw back in canvas
-        this.context.putImageData(imageData, this.image.width, 0)
+        this.sorted.context.putImageData(imageData, 0, 0)
     }
 }

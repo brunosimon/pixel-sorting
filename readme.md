@@ -15,6 +15,7 @@
 - [x] Choose direction
 - [ ] Handle non square images
 - [ ] Upload
-- [ ] Download
+- [ ] Random image from Unsplash
+- [ ] Download result
 - [ ] GUI
 - [ ] Workers
