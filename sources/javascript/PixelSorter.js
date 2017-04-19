@@ -9,7 +9,7 @@ export default class PixelSorter extends EventEmitter
     {
         super()
 
-        this.direction = 'vertical' // horizontal | vertical
+        this.orientation = 'vertical' // horizontal | vertical
         this.proportion = 1
 
         this.setCanvas()
@@ -97,7 +97,7 @@ export default class PixelSorter extends EventEmitter
             pixel.l = (pixel.r + pixel.g + pixel.b) / 3
 
             // Horizontal
-            if(this.direction === 'horizontal')
+            if(this.orientation === 'horizontal')
             {
                 // Create new row
                 if(x === 0)
@@ -108,7 +108,7 @@ export default class PixelSorter extends EventEmitter
                 this.rows[y][x] = pixel
             }
             // Vertical
-            else if(this.direction === 'vertical')
+            else if(this.orientation === 'vertical')
             {
                 // Create new row
                 if(y === 0)
@@ -198,12 +198,12 @@ export default class PixelSorter extends EventEmitter
                 let pixelIndex = null
 
                 // Horizontal
-                if(this.direction === 'horizontal')
+                if(this.orientation === 'horizontal')
                 {
                     pixelIndex = index
                 }
                 // Vertical
-                else if(this.direction === 'vertical')
+                else if(this.orientation === 'vertical')
                 {
                     const x = index % this.image.height
                     const y = Math.floor(index / this.image.height)

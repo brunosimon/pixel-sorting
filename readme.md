@@ -12,10 +12,11 @@
 ### Todo
 
 - [x] Base pixel sorting function
-- [x] Choose direction
-- [ ] Handle non square images
+- [x] Add orientation
+- [x] Handle non square images
 - [ ] Upload
-- [ ] Random image from Unsplash
+- [x] Random image from Unsplash
 - [ ] Download result
-- [ ] GUI
+- [x] GUI
+- [ ] Add direction
 - [ ] Workers
