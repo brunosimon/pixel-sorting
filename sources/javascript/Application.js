@@ -65,5 +65,31 @@ export default class Application
         config.fromURL.folder.open()
         config.fromURL.folder.add(config.fromURL, 'url')
         config.fromURL.folder.add(config.fromURL, 'fetch').name('fetch from URL')
+
+        // Upload
+        const $input = document.createElement('input')
+        const reader = new FileReader()
+
+        reader.addEventListener('load', () =>
+        {
+            this.pixelSorter.sort(reader.result)
+        })
+
+        $input.type = 'file'
+        $input.accept = 'image/*'
+        $input.addEventListener('change', (event) =>
+        {
+            reader.readAsDataURL($input.files[0])
+        })
+
+        config.fromFile = {}
+        config.fromFile.folder = this.ui.addFolder('from file')
+        config.fromFile.upload = () =>
+        {
+            $input.click()
+        }
+
+        config.fromFile.folder.open()
+        config.fromFile.folder.add(config.fromFile, 'upload').name('fetch from file')
     }
 }

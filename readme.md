@@ -14,7 +14,7 @@
 - [x] Base pixel sorting function
 - [x] Add orientation
 - [x] Handle non square images
-- [ ] Upload
+- [x] Upload
 - [x] Random image from Unsplash
 - [ ] Download result
 - [x] GUI
