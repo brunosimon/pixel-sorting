@@ -10,6 +10,8 @@ export default class PixelSorter extends EventEmitter
         super()
 
         this.orientation = 'vertical' // horizontal | vertical
+        this.order = 'default' // default | reverse
+        this.direction = 'default' // default | reverse
         this.proportion = 1
 
         this.setCanvas()
@@ -130,41 +132,85 @@ export default class PixelSorter extends EventEmitter
         let rowIndex = 0
         for(let row of this.rows)
         {
-            let index = 0
             let pixel = null
             let newRow = []
 
-            // Each pixel until end of row
-            while(index < row.length)
+            // Default order
+            if(this.order === 'default')
             {
-                // Set first pixel and create chunk
-                pixel = row[index]
-                const chunk = [pixel]
+                let index = 0
 
-                // Each next pixel until condition failed or end of row
-                let nextIndex = index
-                while(++nextIndex < row.length)
+                // Each pixel until end of row
+                while(index < row.length)
                 {
-                    const nextPixel = row[nextIndex]
+                    // Set first pixel and create chunk
+                    pixel = row[index]
+                    const chunk = [pixel]
 
-                    if(nextPixel.l > pixel.l)
+                    // Each next pixel until condition failed or end of row
+                    let nextIndex = index
+                    while(++nextIndex < row.length)
                     {
-                        chunk.push(nextPixel)
+                        const nextPixel = row[nextIndex]
+
+                        if(this.direction === 'default' ? nextPixel.l > pixel.l : nextPixel.l < pixel.l)
+                        {
+                            chunk.push(nextPixel)
+                        }
+                        else
+                        {
+                            break
+                        }
                     }
-                    else
-                    {
-                        break
-                    }
+
+                    // Sort
+                    chunk.sort(this.compare)
+
+                    // Add chunk to new row
+                    newRow = [...newRow, ...chunk]
+
+                    // Increment index
+                    index += chunk.length
                 }
+            }
 
-                // Sort
-                chunk.sort(this.compare)
+            // Reverse order
+            else if(this.order === 'reverse')
+            {
+                let index = row.length - 1
 
-                // Add chunk to new row
-                newRow = [...newRow, ...chunk]
+                // Each pixel until end of row
+                while(index >= 0)
+                {
+                    // Set first pixel and create chunk
+                    pixel = row[index]
+                    const chunk = [pixel]
 
-                // Increment index
-                index += chunk.length
+                    // Each next pixel until condition failed or end of row
+                    let nextIndex = index
+                    while(--nextIndex >= 0)
+                    {
+                        const nextPixel = row[nextIndex]
+
+                        if(this.direction === 'default' ? nextPixel.l > pixel.l : nextPixel.l < pixel.l)
+                        {
+                            chunk.push(nextPixel)
+                        }
+                        else
+                        {
+                            break
+                        }
+                    }
+
+                    // Sort
+                    chunk.sort(this.compare)
+
+                    // Add chunk to new row
+                    newRow = [...newRow, ...chunk]
+
+                    // Increment index
+                    index -= chunk.length
+                }
             }
 
             this.rows[rowIndex] = newRow

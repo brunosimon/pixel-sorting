@@ -36,6 +36,8 @@ export default class Application
 
         config.options.folder.open()
         config.options.folder.add(this.pixelSorter, 'orientation', ['vertical', 'horizontal'])
+        config.options.folder.add(this.pixelSorter, 'order', ['default', 'reverse'])
+        config.options.folder.add(this.pixelSorter, 'direction', ['default', 'reverse'])
         config.options.folder.add(config.options, 'fetch').name('fetch same again')
 
         // From unsplash.it
