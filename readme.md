@@ -18,5 +18,6 @@
 - [x] Random image from Unsplash
 - [ ] Download result
 - [x] GUI
-- [ ] Add direction
+- [x] Add direction
 - [ ] Workers
+- [ ] Process feedback (downloading, sorting, error, ...)
