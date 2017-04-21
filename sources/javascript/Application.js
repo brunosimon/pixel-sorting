@@ -8,13 +8,63 @@ export default class Application
      */
     constructor()
     {
-        this.pixelSorter = new PixelSorter()
-        this.pixelSorter.sort('https://unsplash.it/500/500/?random')
+        this.$container = document.querySelector('.application')
 
-        document.body.appendChild(this.pixelSorter.original.canvas)
-        document.body.appendChild(this.pixelSorter.sorted.canvas)
-
+        this.setNotification()
+        this.setPixelSorter()
         this.setDebug()
+    }
+
+    /**
+     * Set notification
+     */
+    setNotification()
+    {
+        this.notification = {}
+        this.notification.$container = this.$container.querySelector('.notification')
+        this.notification.$text = this.notification.$container.querySelector('.text')
+    }
+
+    /**
+     * Set pixel sorter
+     */
+    setPixelSorter()
+    {
+        // Set up sorter
+        this.pixelSorter = new PixelSorter()
+
+        // Add to DOM
+        this.$container.appendChild(this.pixelSorter.original.canvas)
+        this.$container.appendChild(this.pixelSorter.sorted.canvas)
+
+        // Start loading event
+        this.pixelSorter.on('start-loading', () =>
+        {
+            this.notification.$container.classList.add('is-active')
+            this.notification.$text.innerText = 'Loading image'
+        })
+
+        // Start sorting event
+        this.pixelSorter.on('start-sorting', () =>
+        {
+            this.notification.$text.innerText = 'Sorting pixels'
+        })
+
+        // End sorting event
+        this.pixelSorter.on('end-sorting', () =>
+        {
+            this.notification.$container.classList.remove('is-active')
+        })
+
+        // Loading error event
+        this.pixelSorter.on('loading-error', () =>
+        {
+            this.notification.$container.classList.add('is-active')
+            this.notification.$text.innerText = 'Cannot load image'
+        })
+
+        // Start sorting random image
+        this.pixelSorter.sort('https://unsplash.it/500/500/?random')
     }
 
     /**

@@ -20,4 +20,4 @@
 - [x] GUI
 - [x] Add direction
 - [x] Workers
-- [ ] Process feedback (downloading, sorting, error, ...)
+- [x] Process feedback (downloading, sorting, error, ...)

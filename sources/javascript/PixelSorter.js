@@ -32,6 +32,7 @@ export default class PixelSorter extends EventEmitter
 
         this.worker.addEventListener('message', (event) =>
         {
+            this.trigger('end-sorting')
             this.rows = event.data
             this.drawPixels()
         })
@@ -83,13 +84,23 @@ export default class PixelSorter extends EventEmitter
             this.sorted.canvas.height = this.image.height
 
             this.setPixels()
+            
+            this.trigger('end-loading')
+            this.trigger('start-sorting')
 
             this.worker.postMessage({rows: this.rows, order: this.order, direction: this.direction})
+        })
+
+        image.addEventListener('error', () =>
+        {
+            this.trigger('loading-error')
         })
 
         image.src = imageSrc
 
         this.date = new Date()
+
+        this.trigger('start-loading')
     }
 
     /**
