@@ -93,5 +93,49 @@ export default class Application
 
         config.fromFile.folder.open()
         config.fromFile.folder.add(config.fromFile, 'upload').name('fetch from file')
+
+        // Download
+        config.download = {}
+        config.download.$link = document.createElement('a')
+        config.download.folder = this.ui.addFolder('download')
+        config.download.downloadOriginal = () =>
+        {
+            // Download
+            config.download.$link.href = this.pixelSorter.original.canvas.toDataURL()
+            config.download.$link.download = `pixel_sorting-original-${this.pixelSorter.original.canvas.width}x${this.pixelSorter.original.canvas.height}-${+ this.pixelSorter.date}.png`
+            config.download.$link.click()
+        }
+        config.download.downloadSorted = () =>
+        {
+            // Download
+            config.download.$link.href = this.pixelSorter.sorted.canvas.toDataURL()
+            config.download.$link.download = `pixel_sorting-sorted-${this.pixelSorter.sorted.canvas.width}x${this.pixelSorter.sorted.canvas.height}-${+ this.pixelSorter.date}.png`
+            config.download.$link.click()
+        }
+        config.download.downloadBoth = () =>
+        {
+            // Create a canvas contening both original and sorted results
+            const width = this.pixelSorter.sorted.canvas.width
+            const height = this.pixelSorter.sorted.canvas.height
+
+            const canvas = document.createElement('canvas')
+            canvas.width = width * 2
+            canvas.height = height
+
+            const context = canvas.getContext('2d')
+
+            context.drawImage(this.pixelSorter.original.canvas, 0, 0, width, height)
+            context.drawImage(this.pixelSorter.sorted.canvas, width, 0, width, height)
+
+            // Download
+            config.download.$link.href = canvas.toDataURL()
+            config.download.$link.download = `pixel_sorting-both-${width}x${height}-${+ this.pixelSorter.date}.png`
+            config.download.$link.click()
+        }
+
+        config.download.folder.open()
+        config.download.folder.add(config.download, 'downloadOriginal').name('original')
+        config.download.folder.add(config.download, 'downloadSorted').name('sorted')
+        config.download.folder.add(config.download, 'downloadBoth').name('both')
     }
 }

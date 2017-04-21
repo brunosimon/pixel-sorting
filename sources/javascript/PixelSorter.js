@@ -13,6 +13,7 @@ export default class PixelSorter extends EventEmitter
         this.order = 'default' // default | reverse
         this.direction = 'default' // default | reverse
         this.proportion = 1
+        this.date = null
 
         this.setCanvas()
     }
@@ -68,6 +69,8 @@ export default class PixelSorter extends EventEmitter
         })
 
         image.src = imageSrc
+
+        this.date = new Date()
     }
 
     /**
