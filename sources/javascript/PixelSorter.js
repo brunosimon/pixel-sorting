@@ -1,4 +1,5 @@
 import EventEmitter from './EventEmitter.js'
+import SortWorker from './Workers/Sort.js'
 
 export default class PixelSorter extends EventEmitter
 {
@@ -15,7 +16,25 @@ export default class PixelSorter extends EventEmitter
         this.proportion = 1
         this.date = null
 
+        this.setWorker()
         this.setCanvas()
+    }
+
+    /**
+     * Set worker
+     */
+    setWorker()
+    {
+        // Create worker from imported file (ugly put modular)
+        const blob = new Blob([`(${SortWorker})()`], {type: 'application/octet-binary'})
+        const url = window.URL.createObjectURL(blob)
+        this.worker = new Worker(url)
+
+        this.worker.addEventListener('message', (event) =>
+        {
+            this.rows = event.data
+            this.drawPixels()
+        })
     }
 
     /**
@@ -64,8 +83,8 @@ export default class PixelSorter extends EventEmitter
             this.sorted.canvas.height = this.image.height
 
             this.setPixels()
-            this.sortPixels()
-            this.drawPixels()
+
+            this.worker.postMessage({rows: this.rows, order: this.order, direction: this.direction})
         })
 
         image.src = imageSrc
@@ -124,109 +143,6 @@ export default class PixelSorter extends EventEmitter
                 this.rows[x][y] = pixel
             }
         }
-    }
-
-    /**
-     * Sort pixels
-     */
-    sortPixels()
-    {
-        // Each row
-        let rowIndex = 0
-        for(let row of this.rows)
-        {
-            let pixel = null
-            let newRow = []
-
-            // Default order
-            if(this.order === 'default')
-            {
-                let index = 0
-
-                // Each pixel until end of row
-                while(index < row.length)
-                {
-                    // Set first pixel and create chunk
-                    pixel = row[index]
-                    const chunk = [pixel]
-
-                    // Each next pixel until condition failed or end of row
-                    let nextIndex = index
-                    while(++nextIndex < row.length)
-                    {
-                        const nextPixel = row[nextIndex]
-
-                        if(this.direction === 'default' ? nextPixel.l > pixel.l : nextPixel.l < pixel.l)
-                        {
-                            chunk.push(nextPixel)
-                        }
-                        else
-                        {
-                            break
-                        }
-                    }
-
-                    // Sort
-                    chunk.sort(this.compare)
-
-                    // Add chunk to new row
-                    newRow = [...newRow, ...chunk]
-
-                    // Increment index
-                    index += chunk.length
-                }
-            }
-
-            // Reverse order
-            else if(this.order === 'reverse')
-            {
-                let index = row.length - 1
-
-                // Each pixel until end of row
-                while(index >= 0)
-                {
-                    // Set first pixel and create chunk
-                    pixel = row[index]
-                    const chunk = [pixel]
-
-                    // Each next pixel until condition failed or end of row
-                    let nextIndex = index
-                    while(--nextIndex >= 0)
-                    {
-                        const nextPixel = row[nextIndex]
-
-                        if(this.direction === 'default' ? nextPixel.l > pixel.l : nextPixel.l < pixel.l)
-                        {
-                            chunk.push(nextPixel)
-                        }
-                        else
-                        {
-                            break
-                        }
-                    }
-
-                    // Sort
-                    chunk.sort(this.compare)
-
-                    // Add chunk to new row
-                    newRow = [...newRow, ...chunk]
-
-                    // Increment index
-                    index -= chunk.length
-                }
-            }
-
-            this.rows[rowIndex] = newRow
-            rowIndex++
-        }
-    }
-
-    /**
-     * Compare function
-     */
-    compare(a, b)
-    {
-        return b.l - a.l
     }
 
     /**

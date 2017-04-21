@@ -19,5 +19,5 @@
 - [x] Download result
 - [x] GUI
 - [x] Add direction
-- [ ] Workers
+- [x] Workers
 - [ ] Process feedback (downloading, sorting, error, ...)
